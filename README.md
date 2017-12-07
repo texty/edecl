@@ -9,12 +9,10 @@
 
 Для встановлення з гіт-репозиторію потрібено мати встановлений пакет devtools
 
-`install.packages("devtools")
+    install.packages("devtools")
+    devtools::install_git("https://github.com/texty/edecl")
+    library(edecl)
 
-devtools::install_git("https://github.com/texty/edecl")
-
-library(edecl)
-`
 
 **Функції**
 
