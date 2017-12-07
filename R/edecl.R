@@ -20,7 +20,7 @@ decl_request <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL,
   }
   url <- paste0(url, "format=opendata")
   request <- httr::GET(url = url, query = query)
-  content(request)
+  httr::content(request)
 }
 
 get_infocard <- function(d) {
