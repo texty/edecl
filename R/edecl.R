@@ -54,7 +54,23 @@ related_companies <- function(decls) {
   }
   df
 }
-
+#' Download declarations
+#'
+#' Downloads declarations from declarations.com.ua
+#' @param q Search query
+#' @param deepsearch Should website search in all declarations field, not only in name and workpost?
+#' @param declaration_year Character. The year of declaration.
+#' @param doc_type Character. The type of declaration.
+#' @param post_type Character. The type of post
+#' @param region_type Should it be search in regions where declarer is registered, where he lives or where has realty?
+#' @param region_value Region query value.
+#' @keywords download_declarations
+#' @export
+#' @examples 
+#' library(dplyr)
+#' poroshenko2016 <- 
+#'     download_declarations("порошенко петро олексійович", declaration_year = "2016") %>% 
+#'
 download_declarations <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL, 
                                   doc_type = NULL, post_type = NULL,
                                   region_type = NULL, region_value = NULL) {
