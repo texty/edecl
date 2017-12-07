@@ -69,7 +69,7 @@ related_companies <- function(decls) {
 #' @examples 
 #' library(dplyr)
 #' poroshenko2016 <- 
-#'     download_declarations("порошенко петро олексійович", declaration_year = "2016") %>% 
+#'     download_declarations("порошенко петро олексійович", declaration_year = "2016")
 #'
 download_declarations <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL, 
                                   doc_type = NULL, post_type = NULL,
@@ -97,6 +97,17 @@ extract_guids <- function(decls) {
   sapply(decls, function(x) x$guid)
 }
 
+#' Exctract names
+#'
+#' Extracts names of the declarers
+#' @param decls The declarations set
+#' @keywords extract_names
+#' @export
+#' @examples 
+#' library(dplyr)
+#' bitcoins2016 <- 
+#'     download_declarations("біткойн", declaration_year = "2016", deepsearch = T) %>% 
+#'     extract_names()
 extract_names <- function(decls) {
   sapply(decls, function(x) {
     stringr::str_trim(paste(c(x$infocard$last_name, x$infocard$first_name, x$infocard$patronymic), collapse = " "))

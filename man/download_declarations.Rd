@@ -29,7 +29,7 @@ Downloads declarations from declarations.com.ua
 \examples{
 library(dplyr)
 poroshenko2016 <- 
-    download_declarations("порошенко петро олексійович", declaration_year = "2016") \%>\% 
+    download_declarations("порошенко петро олексійович", declaration_year = "2016")
 
 }
 \keyword{download_declarations}

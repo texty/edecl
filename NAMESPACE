@@ -2,6 +2,7 @@
 
 export(dintersect)
 export(download_declarations)
+export(extract_names)
 export(get_corrected)
 export(related_companies)
 export(step_to_df)
