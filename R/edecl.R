@@ -226,11 +226,6 @@ single_step_to_df <- function(d, step) {
     df <- data.frame()
     for (o in step) {
       if (class(o) == "list") {
-        if ("rights" %in% names(o)) {
-          if (length(o$rights) > 1) {
-            print("rights")
-          }
-        }
         o$rights <- NULL
         o$guarantor <- NULL
         o$guarantor_realty <- NULL
