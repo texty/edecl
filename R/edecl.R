@@ -228,13 +228,15 @@ single_step_to_df <- function(d, step) {
       if (class(o) == "list") {
         if ("rights" %in% names(o)) {
           if (length(o$rights) > 1) {
-            print("rights")
+            rights_columns <- o$rights[[1]][c("ownershipType", "otherOwnership", "percent-ownership")]
+            rights_columns <- data.frame(rights_columns, stringsAsFactors = FALSE)
           }
         }
         o$rights <- NULL
         o$guarantor <- NULL
         o$guarantor_realty <- NULL
-        df <- dplyr::bind_rows(df, data.frame(o, stringsAsFactors = F))
+        df_new <- data.frame(o, stringsAsFactors = F)
+        df <- dplyr::bind_rows(df, cbind(df_new, rights_columns))
       }
       
     }
