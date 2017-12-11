@@ -228,7 +228,7 @@ single_step_to_df <- function(d, step) {
       if (class(o) == "list") {
         rights_columns <- data.frame(list())
         if ("rights" %in% names(o)) {
-          rights_columns <- o$rights[['1']][c("ownershipType", "otherOwnership", "percent-ownership")]
+          rights_columns <- o$rights[[o$person]][c("ownershipType", "otherOwnership", "percent-ownership")]
           rights_columns <- data.frame(rights_columns, stringsAsFactors = FALSE)
           if (length(o$rights) > 1) {
 
