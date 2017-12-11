@@ -224,7 +224,7 @@ single_step_to_df <- function(d, step) {
   step <- d[['unified_source']][[step]]
   if (!is.null(step)) {
     df <- data.frame()
-    # for (o in step) {
+    for (o in step) {
       if (class(o) == "list") {
         if ("rights" %in% names(o)) {
           if (length(o$rights) > 1) {
