@@ -239,7 +239,7 @@ single_step_to_df <- function(d, step) {
         o$guarantor <- NULL
         o$guarantor_realty <- NULL
         df_new <- data.frame(o, stringsAsFactors = F)
-        df <- dplyr::bind_rows(df, cbind(df_new, rights_columns))
+        df <- dplyr::bind_rows(df, dplyr::bind_cols(df_new, rights_columns))
       }
       
     }
