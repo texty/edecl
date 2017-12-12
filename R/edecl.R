@@ -214,7 +214,7 @@ same_person <- function(d1, d2) {
 step_to_df <- function(decls, step, rights_table_name = NULL) {
   df <- data.frame()
   for (d in decls) {
-    df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = NULL))
+    df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
   }
   df
 }
@@ -267,8 +267,8 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
     if (nrow(df) > 0) {
       if (!is.null(rights_table_name)) {
         #print("assigning")
-        #assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
-        list(data = cbind(get_infocard(d), df), rights = add_rights)
+        assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
+        #list(data = cbind(get_infocard(d), df), rights = add_rights)
       } else {
         cbind(get_infocard(d), df)
       }
