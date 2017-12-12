@@ -235,6 +235,7 @@ single_step_to_df <- function(d, step) {
           if (length(o$rights) > 0) {
             for (j in 1:length(o$rights)) {
               if (names(o$rights)[j] != o$rights[[j]]$rightBelongs) {
+                print(d$guid)
                 print((names(o$rights)[j]))
                 print(o$rights[[j]]$rightBelongs)
               }
