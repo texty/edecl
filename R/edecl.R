@@ -248,6 +248,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
               rights_row <- data.frame(o$rights[[j]], stringsAsFactors = FALSE)
               rights_row$rightBelongs <- names(o$rights[j])
               rights_row$object_id <- names(step)[i]
+              print(rights_row)
               add_rights <- bind_rows(add_rights, rights_row)
             }
           }
