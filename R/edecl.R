@@ -211,17 +211,19 @@ same_person <- function(d1, d2) {
 #' mps2016_realty <- 
 #'    download_declarations("народний депутат", declaration_year = "2016") %>% 
 #'    step_to_df("step_3")
-step_to_df <- function(decls, step) {
+step_to_df <- function(decls, step, rights_table_name = NULL) {
   df <- data.frame()
   for (d in decls) {
-    df <- dplyr::bind_rows(df, single_step_to_df(d, step))
+    df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = NULL))
   }
   df
 }
     
 
-single_step_to_df <- function(d, step) {
+single_step_to_df <- function(d, step, rights_table_name = NULL) {
   step <- d[['unified_source']][[step]]
+  assing(rights_table_name, data.frame())
+  add_rights <- data.frame()
   if (!is.null(step)) {
     df <- data.frame()
     for (i in 1:length(step)) {
@@ -229,19 +231,25 @@ single_step_to_df <- function(d, step) {
       if (class(o) == "list") {
         rights_columns <- data.frame(list())
         if ("rights" %in% names(o)) {
-          for (j in 1:length(o$rights)) {
-            if (names(o$rights)[j] != o$rights[[j]]$rightBelongs & o$rights[[j]]$rightBelongs != "j") {
-              print(d$guid)
-              print((names(o$rights)[j]))
-              print(o$rights[[j]]$rightBelongs)
-            }
-          }
+          # for (j in 1:length(o$rights)) {
+          #   if (names(o$rights)[j] != o$rights[[j]]$rightBelongs & o$rights[[j]]$rightBelongs != "j") {
+          #     print(d$guid)
+          #     print((names(o$rights)[j]))
+          #     print(o$rights[[j]]$rightBelongs)
+          #   }
+          # }
           rights_columns <- o$rights[[o$person]][c("ownershipType", "otherOwnership", "percent-ownership")]
           o$rights[[o$person]] <- NULL
           rights_columns <- data.frame(rights_columns, stringsAsFactors = FALSE)
           if (length(o$rights) > 0) {
-
-          } 
+            for (j in 1:length(o$rights)) {
+              rights_row <- data.frame(o$rights[[i]], stringsAsFactors = FALSE)
+              rights_row$rightBelongs <- names(o$rights[j])
+              rights_row$object_id <- names(step)[i]
+              add_rights <- bind_rows(add_rights, rights_row)
+            }
+          }
+          
         }
         o$rights <- NULL
         o$guarantor <- NULL
@@ -253,7 +261,9 @@ single_step_to_df <- function(d, step) {
       
     }
     if (nrow(df) > 0) {
+      assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
       cbind(get_infocard(d), df)
     }
   }
+  
 }
