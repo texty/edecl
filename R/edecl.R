@@ -225,7 +225,6 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
   if (!is.null(rights_table_name)) {
     assign(rights_table_name, data.frame())
   }
-  print()
   add_rights <- data.frame(stringsAsFactors = FALSE)
   if (!is.null(step)) {
     df <- data.frame()
