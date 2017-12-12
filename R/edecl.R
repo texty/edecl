@@ -222,7 +222,9 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
 
 single_step_to_df <- function(d, step, rights_table_name = NULL) {
   step <- d[['unified_source']][[step]]
-  assing(rights_table_name, data.frame())
+  if (!is.null(rights_table_name)) {
+    assign(rights_table_name, data.frame())
+  }
   add_rights <- data.frame()
   if (!is.null(step)) {
     df <- data.frame()
@@ -261,7 +263,9 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
       
     }
     if (nrow(df) > 0) {
-      assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
+      if (!is.null(rights_table_name)) {
+        assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
+      }
       cbind(get_infocard(d), df)
     }
   }
