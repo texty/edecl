@@ -224,7 +224,8 @@ single_step_to_df <- function(d, step) {
   step <- d[['unified_source']][[step]]
   if (!is.null(step)) {
     df <- data.frame()
-    for (o in step) {
+    for (i in 1:length(step)) {
+      o <- step[[i]]
       if (class(o) == "list") {
         rights_columns <- data.frame(list())
         if ("rights" %in% names(o)) {
@@ -240,6 +241,7 @@ single_step_to_df <- function(d, step) {
         o$guarantor <- NULL
         o$guarantor_realty <- NULL
         df_new <- data.frame(o, stringsAsFactors = F)
+        df_new$object_id <- names(step)[i]
         df <- dplyr::bind_rows(df, dplyr::bind_cols(df_new, rights_columns))
       }
       
