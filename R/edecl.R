@@ -266,7 +266,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
     }
     if (nrow(df) > 0) {
       if (!is.null(rights_table_name)) {
-        print(globalenv())
+        #print(globalenv())
         assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
       }
       cbind(get_infocard(d), df)
