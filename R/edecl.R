@@ -234,7 +234,7 @@ single_step_to_df <- function(d, step) {
           rights_columns <- data.frame(rights_columns, stringsAsFactors = FALSE)
           if (length(o$rights) > 0) {
             for (j in 1:length(o$rights)) {
-              if (names[i] != o$rights[[i]]$right_belongs) {
+              if (names(o$rights)[i] != o$rights[[i]]$right_belongs) {
                 print("exception")
               }
             }
