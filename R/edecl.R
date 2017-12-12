@@ -229,17 +229,18 @@ single_step_to_df <- function(d, step) {
       if (class(o) == "list") {
         rights_columns <- data.frame(list())
         if ("rights" %in% names(o)) {
+          for (j in 1:length(o$rights)) {
+            if (names(o$rights)[j] != o$rights[[j]]$rightBelongs & o$rights[[j]]$rightBelongs != "j") {
+              print(d$guid)
+              print((names(o$rights)[j]))
+              print(o$rights[[j]]$rightBelongs)
+            }
+          }
           rights_columns <- o$rights[[o$person]][c("ownershipType", "otherOwnership", "percent-ownership")]
           o$rights[[o$person]] <- NULL
           rights_columns <- data.frame(rights_columns, stringsAsFactors = FALSE)
           if (length(o$rights) > 0) {
-            for (j in 1:length(o$rights)) {
-              if (names(o$rights)[j] != o$rights[[j]]$rightBelongs) {
-                print(d$guid)
-                print((names(o$rights)[j]))
-                print(o$rights[[j]]$rightBelongs)
-              }
-            }
+
           } 
         }
         o$rights <- NULL
