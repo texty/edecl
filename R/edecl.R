@@ -225,6 +225,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
   if (!is.null(rights_table_name)) {
     assign(rights_table_name, data.frame())
   }
+  print()
   add_rights <- data.frame(stringsAsFactors = FALSE)
   if (!is.null(step)) {
     df <- data.frame()
@@ -249,7 +250,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
               rights_row <- apply(rights_row, 2, str)
               rights_row$rightBelongs <- names(o$rights[j])
               rights_row$object_id <- names(step)[i]
-              print(rights_row)
+              #print(rights_row)
               add_rights <- bind_rows(add_rights, rights_row)
             }
           }
@@ -266,6 +267,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
     }
     if (nrow(df) > 0) {
       if (!is.null(rights_table_name)) {
+        print(globalenv())
         assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
       }
       cbind(get_infocard(d), df)
