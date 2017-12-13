@@ -216,8 +216,12 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
   if (!is.null(rights_table_name)) {
     assign(rights_table_name, data.frame(), envir = globalenv())
   }
+  count <- 1
   for (d in decls) {
     df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
+    print(count)
+    count <- count + 1
+    print(length(df))
   }
   df
 }
@@ -255,8 +259,6 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
         df_new <- data.frame(o, stringsAsFactors = F)
         df_new$object_id <- names(step)[i]
         df <- dplyr::bind_rows(df, dplyr::bind_cols(df_new, rights_columns))
-        print(i)
-        print(nrow(df))
       }
       
     }
