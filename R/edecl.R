@@ -6,6 +6,26 @@ add_mult_parameters <- function(params, param_name) {
   s
 }
 
+char2num <- function(df) {
+  num_fields <- c("totalArea", "costAssessment", "percent.ownership", 
+                  "sizeAssets", "sizeObligation", "costAmount")
+  date_fields <- c("costDate", "owningDate", "dateOrigin")
+  datetime_fields <- c("")
+  num_fields <- num_fields[num_fields %in% names(df)]
+  for (f in num_fields) {
+    df[f] <- gsub(",", ".", df[f])
+    df[f] <- as.numeric(df[f])
+  }
+  date_fields <- date_fields[date_fields %in% names(df)]
+  for (f in date_fields) {
+    df[f] <- as.numeric(df[f])
+  }
+  datetime_fields <- datetime_fields[datetime_fields %in% names(df)]
+  for (f in datetime_fields) {
+    df[f] <- as.Date(df[f], format =  "%Y-%m-%dT%H:%M:%S")
+  }
+}
+
 decl_request <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL, 
                          doc_type = NULL, post_type = NULL,
                          region_type = NULL, region_value = NULL, page = NULL) {
@@ -220,8 +240,6 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
   count <- 1
   for (d in decls) {
     df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
-    #print(count)
-    #print(nrow(df))
     setTxtProgressBar(pb, count)
     count <- count + 1
   }
@@ -270,7 +288,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
         assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
         #list(data = cbind(get_infocard(d), df), rights = add_rights)
       } 
-      cbind(get_infocard(d), df)
+      char2num(cbind(get_infocard(d), df))
     }  
   } 
 }
