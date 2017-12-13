@@ -7,9 +7,9 @@ add_mult_parameters <- function(params, param_name) {
 }
 
 char2num <- function(df) {
-  num_fields <- c("totalArea", "costAssessment", "percent.ownership", 
+  num_fields <- c("totalArea", "costAssessment", "costDate", "percent.ownership", 
                   "sizeAssets", "sizeObligation", "costAmount")
-  date_fields <- c("costDate", "owningDate", "dateOrigin")
+  date_fields <- c("owningDate", "dateOrigin")
   datetime_fields <- c("created_date")
   num_fields <- num_fields[num_fields %in% names(df)]
   for (f in num_fields) {
@@ -20,7 +20,7 @@ char2num <- function(df) {
   date_fields <- date_fields[date_fields %in% names(df)]
   for (f in date_fields) {
     df[[f]][df[[f]] == ""] <- NA
-    df[[f]] <- as.numeric(df[[f]])
+    df[[f]] <- as.Date(df[[f]], format = "%d.%m.%Y")
   }
   datetime_fields <- datetime_fields[datetime_fields %in% names(df)]
   for (f in datetime_fields) {
