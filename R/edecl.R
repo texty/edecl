@@ -247,7 +247,7 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
     setTxtProgressBar(pb, count)
     count <- count + 1
   }
-  df
+  char2num(df)
 }
     
 
@@ -292,7 +292,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
         assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
         #list(data = cbind(get_infocard(d), df), rights = add_rights)
       } 
-      char2num(cbind(get_infocard(d), df))
+      cbind(get_infocard(d), df)
     }  
   } 
 }
