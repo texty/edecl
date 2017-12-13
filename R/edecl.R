@@ -214,7 +214,7 @@ same_person <- function(d1, d2) {
 step_to_df <- function(decls, step, rights_table_name = NULL) {
   df <- data.frame()
   if (!is.null(rights_table_name)) {
-    assign(rights_table_name, data.frame())
+    assign(rights_table_name, data.frame(), envir = globalenv())
   }
   for (d in decls) {
     df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
