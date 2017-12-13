@@ -53,7 +53,7 @@ get_infocard <- function(d) {
   #df$guid <- d$guid
   df$fullname <- stringr::str_trim(paste(df$last_name, df$first_name, df$patronymic))
 
-  cbind(df[, c("fullname", names(df)[-which(names(df) == "fullname"])])
+  df[, c("fullname", names(df)[-which(names(df) == "fullname")])]
 }
 #' Related companies
 #'
