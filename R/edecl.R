@@ -221,7 +221,7 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
     df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
     print(count)
     count <- count + 1
-    print(length(df))
+    print(nrow(df))
   }
   df
 }
