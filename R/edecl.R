@@ -257,7 +257,7 @@ step_to_df <- function(decls, step, rights_table = NULL,
     
 
 single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NULL, guarantor_realty_table = NULL) {
-  if (class(step) = "numeric"]) {
+  if (class(step) == "numeric"]) {
     step <- paste0("step_", as.character(step))
   }
   step <- d[['unified_source']][[step]]
