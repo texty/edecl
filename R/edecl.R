@@ -219,9 +219,9 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
   count <- 1
   for (d in decls) {
     df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
-    print(count)
-    count <- count + 1
-    print(nrow(df))
+    #print(count)
+    #count <- count + 1
+    #print(nrow(df))
   }
   df
 }
@@ -247,7 +247,6 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
               rights_row <- apply(rights_row, 2, as.character)
               rights_row$rightBelongs <- names(o$rights)[j]
               rights_row$object_id <- names(step)[i]
-              #print(rights_row)
               add_rights <- bind_rows(add_rights, rights_row)
             }
           }
@@ -258,9 +257,10 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
         o$guarantor_realty <- NULL
         df_new <- data.frame(o, stringsAsFactors = F)
         print("!!!")
-        print(paste("rows in df", as.character(nrow(df_new))))
+        print(paste("rows in df_new", as.character(nrow(df_new))))
         df_new$object_id <- names(step)[i]
         df <- dplyr::bind_rows(df, dplyr::bind_cols(df_new, rights_columns))
+        print(paste("rows in df", as.character(nrow(df))))
       }
       
     }
