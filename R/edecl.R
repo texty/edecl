@@ -237,15 +237,18 @@ same_person <- function(d1, d2) {
 #' mps2016_realty <- 
 #'    download_declarations("народний депутат", declaration_year = "2016") %>% 
 #'    step_to_df("step_3")
-step_to_df <- function(decls, step, rights_table_name = NULL) {
+step_to_df <- function(decls, step, rights_table = NULL, 
+                       guarantor_table = NULL, guarantor_realty_table = NULL) {
   df <- data.frame()
-  if (!is.null(rights_table_name)) {
-    assign(rights_table_name, data.frame(), envir = globalenv())
+  if (!is.null(rights_table)) {
+    assign(rights_table, data.frame(), envir = globalenv())
   }
   pb <- txtProgressBar(min = 0, max = length(decls), style = 3)
   count <- 1
   for (d in decls) {
-    df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
+    df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table = rights_table ,
+                                                  guarantor_table = guarantor_table, 
+                                                 guarantor_realty_table = guarantor_realty_table))
     setTxtProgressBar(pb, count)
     count <- count + 1
   }
@@ -253,9 +256,11 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
 }
     
 
-single_step_to_df <- function(d, step, rights_table_name = NULL) {
+single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NULL, guarantor_realty_table = NULL) {
+  if (class(step) = "numeric"]) {
+    step <- paste0("step_", as.character(step))
+  }
   step <- d[['unified_source']][[step]]
-
   add_rights <- data.frame(stringsAsFactors = FALSE)
   if (!is.null(step)) {
     df <- data.frame()
@@ -289,9 +294,9 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
       
     }
     if (nrow(df) > 0) {
-      if (!is.null(rights_table_name)) {
+      if (!is.null(rights_table)) {
         #print("assigning")
-        assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
+        assign(rights_table, bind_rows(eval(parse(text = rights_table)), add_rights), envir = globalenv())
         #list(data = cbind(get_infocard(d), df), rights = add_rights)
       } 
       cbind(get_infocard(d), df)
