@@ -13,16 +13,19 @@ char2num <- function(df) {
   datetime_fields <- c("created_date")
   num_fields <- num_fields[num_fields %in% names(df)]
   for (f in num_fields) {
-    df[f] <- gsub(",", ".", df[f], fixed = TRUE)
-    df[f] <- as.numeric(df[f])
+    df[[f]] <- gsub(",", ".", df[[f]], fixed = TRUE)
+    df[[f]][df[[f]] == ""] <- NA
+    df[[f]] <- as.numeric(df[[f]])
   }
   date_fields <- date_fields[date_fields %in% names(df)]
   for (f in date_fields) {
-    df[f] <- as.numeric(df[f])
+    df[[f]][df[[f]] == ""] <- NA
+    df[[f]] <- as.numeric(df[[f]])
   }
   datetime_fields <- datetime_fields[datetime_fields %in% names(df)]
   for (f in datetime_fields) {
-    df[f] <- as.Date(df[f], format =  "%Y-%m-%dT%H:%M:%S")
+    df[[f]][df[[f]] == ""] <- NA
+    df[[f]] <- as.Date(df[[f]], format =  "%Y-%m-%dT%H:%M:%S")
   }
   df
 }
