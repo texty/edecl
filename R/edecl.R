@@ -50,10 +50,10 @@ decl_request <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL,
 get_infocard <- function(d) {
   df <- data.frame(matrix(unlist(d$infocard), byrow = TRUE, nrow = 1), stringsAsFactors = F)
   names(df) <- names(d$infocard)
-  df$guid <- d$guid
+  #df$guid <- d$guid
   df$fullname <- stringr::str_trim(paste(df$last_name, df$first_name, df$patronymic))
 
-  cbind(df[,"fullname"], df[,-which(names(df) == "fullname")])
+  cbind(df[, c("fullname", names(df)[-which(names(df) == "fullname"])])
 }
 #' Related companies
 #'
