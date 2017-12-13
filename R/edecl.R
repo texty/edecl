@@ -269,8 +269,8 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
             for (j in 1:length(o$rights)) {
               rights_row <- data.frame(o$rights[[j]], stringsAsFactors = FALSE)
               rights_row <- apply(rights_row, 2, as.character)
-              rights_row$rightBelongs <- names(o$rights)[j]
-              rights_row$object_id <- names(step)[i]
+              rights_row[['rightBelongs']] <- names(o$rights)[j]
+              rights_row[['object_id']] <- names(step)[i]
               add_rights <- bind_rows(add_rights, rights_row)
             }
           }
@@ -281,7 +281,7 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
         o$guarantor_realty <- NULL
         df_new <- data.frame(o, stringsAsFactors = F)
         df_new <- apply(df_new, 2, as.character)
-        df_new$object_id <- names(step)[i]
+        df_new[['object_id']] <- names(step)[i]
         df <- dplyr::bind_rows(df, dplyr::bind_cols(df_new, rights_columns))
       }
       
