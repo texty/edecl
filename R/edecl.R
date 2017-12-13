@@ -265,16 +265,16 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
       }
       
     }
-    if (nrow(df) > 0) {
-      if (!is.null(rights_table_name)) {
-        #print("assigning")
-        assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
-        #list(data = cbind(get_infocard(d), df), rights = add_rights)
-      } else {
-        cbind(get_infocard(d), df)
-      }
-      
-    }
+
   }
-  
+  if (nrow(df) > 0) {
+    if (!is.null(rights_table_name)) {
+      #print("assigning")
+      assign(rights_table_name, bind_rows(eval(parse(text = rights_table_name)), add_rights), envir = globalenv())
+      #list(data = cbind(get_infocard(d), df), rights = add_rights)
+    } else {
+      cbind(get_infocard(d), df)
+    }
+    
+  } 
 }
