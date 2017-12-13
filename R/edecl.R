@@ -216,12 +216,14 @@ step_to_df <- function(decls, step, rights_table_name = NULL) {
   if (!is.null(rights_table_name)) {
     assign(rights_table_name, data.frame(), envir = globalenv())
   }
+  pb <- txtProgressBar(min = 0, max = length(decls), style = 3)
   count <- 1
   for (d in decls) {
     df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table_name = rights_table_name))
     #print(count)
-    #count <- count + 1
     #print(nrow(df))
+    setTxtProgressBar(pb, count)
+    count <- count + 1
   }
   df
 }
