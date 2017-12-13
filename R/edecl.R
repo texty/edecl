@@ -10,10 +10,10 @@ char2num <- function(df) {
   num_fields <- c("totalArea", "costAssessment", "percent.ownership", 
                   "sizeAssets", "sizeObligation", "costAmount")
   date_fields <- c("costDate", "owningDate", "dateOrigin")
-  datetime_fields <- c("")
+  datetime_fields <- c("created_date")
   num_fields <- num_fields[num_fields %in% names(df)]
   for (f in num_fields) {
-    df[f] <- gsub(",", ".", df[f])
+    df[f] <- gsub(",", ".", df[f], fixed = TRUE)
     df[f] <- as.numeric(df[f])
   }
   date_fields <- date_fields[date_fields %in% names(df)]
@@ -24,6 +24,7 @@ char2num <- function(df) {
   for (f in datetime_fields) {
     df[f] <- as.Date(df[f], format =  "%Y-%m-%dT%H:%M:%S")
   }
+  df
 }
 
 decl_request <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL, 
