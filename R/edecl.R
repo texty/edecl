@@ -256,11 +256,9 @@ single_step_to_df <- function(d, step, rights_table_name = NULL) {
         o$guarantor <- NULL
         o$guarantor_realty <- NULL
         df_new <- data.frame(o, stringsAsFactors = F)
-        print("!!!")
-        print(paste("rows in df_new", as.character(nrow(df_new))))
+        df_new <- apply(df_new, 2, as.character)
         df_new$object_id <- names(step)[i]
         df <- dplyr::bind_rows(df, dplyr::bind_cols(df_new, rights_columns))
-        print(paste("rows in df", as.character(nrow(df))))
       }
       
     }
