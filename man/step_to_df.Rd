@@ -4,12 +4,19 @@
 \alias{step_to_df}
 \title{Extract declarations sections}
 \usage{
-step_to_df(decls, step)
+step_to_df(decls, step, rights_table = NULL, guarantor_table = NULL,
+  guarantor_realty_table = NULL)
 }
 \arguments{
-\item{step}{Step (section) of declarations to be extracted. Works correctly if receives values between "step_2" and "step_15"}
+\item{step}{Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 15}
+
+\item{rights_table}{Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored.}
+
+\item{guarantor_realty_table}{Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved.}
 
 \item{d}{Declarations set}
+
+\item{guarantor_table.}{Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved.}
 }
 \description{
 Extract specific sections of declarations into dataframe. For now - ignoring "rights" and "guarantor" subsections

@@ -229,7 +229,10 @@ same_person <- function(d1, d2) {
 #'
 #' Extract specific sections of declarations into dataframe. For now - ignoring "rights" and "guarantor" subsections
 #' @param d Declarations set
-#' @param step Step (section) of declarations to be extracted. Works correctly if receives values between "step_2" and "step_15"
+#' @param step Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 15
+#' @param rights_table Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored.
+#' @param guarantor_table. Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved.
+#' @param guarantor_realty_table Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved.
 #' @keywords step_to_df
 #' @export
 #' @examples 
@@ -242,6 +245,12 @@ step_to_df <- function(decls, step, rights_table = NULL,
   df <- data.frame()
   if (!is.null(rights_table)) {
     assign(rights_table, data.frame(), envir = globalenv())
+  }
+  if (!is.null(guarantor_table)) {
+    assign(guarantor_table, data.frame(), envir = globalenv())
+  }
+  if (!is.null(guarantor_realty_table)) {
+    assign(guarantor_realty_table, data.frame(), envir = globalenv())
   }
   pb <- txtProgressBar(min = 0, max = length(decls), style = 3)
   count <- 1
@@ -262,6 +271,8 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
   }
   step <- d[['unified_source']][[step]]
   add_rights <- data.frame(stringsAsFactors = FALSE)
+  g_table <- data.frame(stringsAsFactors = FALSE)
+  g_r_table <- data.frame(stringsAsFactors = FALSE)
   if (!is.null(step)) {
     df <- data.frame()
     for (i in 1:length(step)) {
@@ -281,6 +292,9 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
               add_rights <- bind_rows(add_rights, rights_row)
             }
           }
+          
+        }
+        if ("guarantor" %in% names(o)) {
           
         }
         o$rights <- NULL
