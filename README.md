@@ -21,4 +21,5 @@
   * step_to_df
   * get_corrected
   * dintersect
+  * dexclude
   * related_companies
