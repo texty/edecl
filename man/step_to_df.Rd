@@ -10,13 +10,13 @@ step_to_df(decls, step, rights_table = NULL, guarantor_table = NULL,
 \arguments{
 \item{step}{Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 15}
 
-\item{rights_table}{Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored.}
+\item{rights_table}{Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored. NB: cannot be equal "rights_table"}
 
-\item{guarantor_realty_table}{Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved.}
+\item{guarantor_realty_table}{Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_realty_table"}
 
 \item{d}{Declarations set}
 
-\item{guarantor_table.}{Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved.}
+\item{guarantor_table.}{Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_table"}
 }
 \description{
 Extract specific sections of declarations into dataframe. For now - ignoring "rights" and "guarantor" subsections

@@ -13,15 +13,15 @@ download_declarations(q = NULL, deepsearch = FALSE,
 
 \item{deepsearch}{Should website search in all declarations field, not only in name and workpost?}
 
-\item{declaration_year}{Character. The year of declaration.}
+\item{declaration_year}{Character or numeric. The year of declaration.}
 
-\item{doc_type}{Character. The type of declaration.}
+\item{doc_type}{Character or numeric. The type of declaration. 1 - "Щорічна", 2 - "Перед звільненням", 3 - "Після звільнення", 4 - "Кандидата на посаду", 5 - "Форма змін".}
 
-\item{post_type}{Character. The type of post}
+\item{post_type}{Character or numeric. The type of declarer's position. Accepting vector longer than 1 element. 1 or "державної" for state authorities position, 2 or "місцевого" for local authorities, 3 or "юридичної" for state-owned enterprises.}
 
-\item{region_type}{Should it be search in regions where declarer is registered, where he lives or where has realty?}
+\item{region_type}{Should it be search in regions where declarer is registered (1 or "region"), where he lives (2 or "actual_region") or where owns realty (3 or "estate_region")?}
 
-\item{region_value}{Region query value.}
+\item{region_value}{Region query value. Substring that can identify region name.}
 }
 \description{
 Downloads declarations from declarations.com.ua
@@ -29,7 +29,7 @@ Downloads declarations from declarations.com.ua
 \examples{
 library(dplyr)
 poroshenko2016 <- 
-    download_declarations("порошенко петро олексійович", declaration_year = "2016")
+    download_declarations("порошенко петро олексійович", declaration_year = 2016, declaration_type = 1)
 
 }
 \keyword{download_declarations}

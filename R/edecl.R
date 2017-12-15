@@ -80,26 +80,106 @@ related_companies <- function(decls) {
   }
   df
 }
+
+doctype_switch <- function(n) {
+  switch(n,
+         "1" = "Щорічна",
+         "2" = "Перед звільненням",
+         "3" = "Після звільнення",
+         "4" = "Кандидата на посаду",
+         "5" = "Форма змін")
+}
+
+find_region <- function(s) {
+  regions <- c( "м. Київ",
+                "Вінницька область",
+                "Волинська область",
+                "Дніпропетровська область",
+                "Донецька область",
+                "Житомирська область",
+                "Закарпатська область",
+                "Запорізька область",
+                "Івано-Франківська область",
+                "Київська область",
+                "Кіровоградська область",
+                "Львівська область",
+                "Луганська область",
+                "Миколаївська область",
+                "Одеська область",
+                'Полтавська область',
+                "Рівненська область",
+                "Сумська область",
+                "Тернопільська область",
+                "Харківська область",
+                "Херсонська область",
+                "Хмельницька область",
+                "Черкаська область",
+                "Чернівецька область",
+                "Чернігівська область",
+                "Кримська Автономна Республіка",
+                "м. Севастополь")
+  found <- regions[tolower(s) == tolower(regions)]
+  if (length(found) == 0) {
+    found <- stringr::str_detect(regions, s)
+    if (sum(found) == 0) {
+      stop(paste0("Cannot find region by substring \"", s, "\""))
+    }
+    if (sum(found) > 1) {
+      print(regions[found])
+      s
+    } else {
+      regions[found]
+    }
+  }
+}
+
+region_type_switch <- function(n) {
+  switch(n,
+         "1" = "region",
+         "2" = "actual_region",
+         "3" = "estate_region")
+}
+
+post_type_switch <- function(n) {
+  switch(n,
+         "1" = "державної",
+         "2" = "місцевого",
+         "3" = "юридичної")
+}
+  
+  
 #' Download declarations
 #'
 #' Downloads declarations from declarations.com.ua
 #' @param q Search query
 #' @param deepsearch Should website search in all declarations field, not only in name and workpost?
-#' @param declaration_year Character. The year of declaration.
-#' @param doc_type Character. The type of declaration.
-#' @param post_type Character. The type of post
-#' @param region_type Should it be search in regions where declarer is registered, where he lives or where has realty?
-#' @param region_value Region query value.
+#' @param declaration_year Character or numeric. The year of declaration.
+#' @param doc_type Character or numeric. The type of declaration. 1 - "Щорічна", 2 - "Перед звільненням", 3 - "Після звільнення", 4 - "Кандидата на посаду", 5 - "Форма змін".
+#' @param post_type Character or numeric. The type of declarer's position. Accepting vector longer than 1 element. 1 or "державної" for state authorities position, 2 or "місцевого" for local authorities, 3 or "юридичної" for state-owned enterprises.
+#' @param region_type Should it be search in regions where declarer is registered (1 or "region"), where he lives (2 or "actual_region") or where owns realty (3 or "estate_region")?
+#' @param region_value Region query value. Substring that can identify region name. 
 #' @keywords download_declarations
 #' @export
 #' @examples 
 #' library(dplyr)
 #' poroshenko2016 <- 
-#'     download_declarations("порошенко петро олексійович", declaration_year = "2016")
+#'     download_declarations("порошенко петро олексійович", declaration_year = 2016, declaration_type = 1)
 #'
 download_declarations <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL, 
                                   doc_type = NULL, post_type = NULL,
                                   region_type = NULL, region_value = NULL) {
+  if (!is.null(region_value)) {
+    region_value <- find_region(region_value)
+  }
+  if (class(doc_type) == "numeric") {
+    doc_type <- doctype_switch(doc_type)
+  }
+  if (class(region_type) == "numeric") {
+    region_type <- region_type_switch(region_type)
+  }
+  if (class(post_type) == "numeric") {
+    post_type <- sapply(post_type, post_type_switch)
+  }
   first_page <- decl_request(q = q, deepsearch = deepsearch, declaration_year = declaration_year,
                              doc_type = doc_type, post_type = post_type, region_type = region_type,
                              region_value = region_value)
@@ -108,8 +188,7 @@ download_declarations <- function(q = NULL, deepsearch=FALSE, declaration_year =
   if (number_pages > 1) {
     pb <- txtProgressBar(min = 0, max = number_pages, style = 3)
     for (i in 2:number_pages) {
-      #cat(paste0("Fetching page ", as.character(i)))
-      objects <- c(objects, decl_request(q = q, deepsearch = deepsearch, declaration_year = declaration_year,
+      objects <- c(objects, decl_request(q = q, deepsearch = deepsearch, declaration_year = as.character(declaration_year),
                                          doc_type = doc_type, post_type = post_type, region_type = region_type,
                                          region_value = region_value, page = i)$results$object_list)
       setTxtProgressBar(pb, i)
@@ -230,9 +309,9 @@ same_person <- function(d1, d2) {
 #' Extract specific sections of declarations into dataframe. For now - ignoring "rights" and "guarantor" subsections
 #' @param d Declarations set
 #' @param step Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 15
-#' @param rights_table Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored.
-#' @param guarantor_table. Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved.
-#' @param guarantor_realty_table Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved.
+#' @param rights_table Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored. NB: cannot be equal "rights_table"
+#' @param guarantor_table. Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_table"
+#' @param guarantor_realty_table Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_realty_table"
 #' @keywords step_to_df
 #' @export
 #' @examples 
@@ -263,20 +342,61 @@ step_to_df <- function(decls, step, rights_table = NULL,
   }
   char2num(df)
 }
-    
+
+
+#' Exclude declarations from set
+#'
+#' Excludes declarations from set that belongs to other set
+#' @param decls1 First set of declarations
+#' @param decls1 The second set of declarations
+#' @keywords dexclude
+#' @export
+#' @examples 
+#' library(dplyr)
+#' mps2016 <- 
+#'    download_declarations("народний депутат", declaration_year = "2016") %>% 
+#'    dexclude(download_declarations("помічник народного депутата", declaration_year = "2016"))
+dexclude <- function(decls1, decls2) {
+  d1_guids <- extract_guids(decls1)
+  d2_guids <- extract_guids(decls2)
+  guids <- d1_guids[!(d1_guids %in% d2_guids)]
+  filter_by_guids(decls1, guids)
+}
+
 
 single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NULL, guarantor_realty_table = NULL) {
   if (class(step) == "numeric") {
     step <- paste0("step_", as.character(step))
   }
-  step <- d[['unified_source']][[step]]
+  if (step != "step_16") {
+    step <- d[['unified_source']][[step]]
+  } else {
+    st <- list()
+    step <-  d[['unified_source']][[step]]
+    #print(step)
+    for (ot in 1:length(step)) {
+      org_of_type <- step[[ot]]
+      if (length(org_of_type) > 0) {
+        for (org_number in 1:length(org_of_type)) {
+          org <- org_of_type[org_number]
+          org_name <- names(org_of_type)[org_number]
+          if (!is.null(org_name)) {
+            st[[org_name]] <- list(org)
+          } 
+        }
+      }
+      
+    }
+    step <- st
+  }
   add_rights <- data.frame(stringsAsFactors = FALSE)
   g_table <- data.frame(stringsAsFactors = FALSE)
   g_r_table <- data.frame(stringsAsFactors = FALSE)
-  if (!is.null(step)) {
+  if (length(step) > 0) {
     df <- data.frame()
     for (i in 1:length(step)) {
       o <- step[[i]]
+      #print(o)
       if (class(o) == "list") {
         rights_columns <- data.frame(list())
         if ("rights" %in% names(o)) {
@@ -294,12 +414,40 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
           }
           
         }
-        if ("guarantor" %in% names(o)) {
-          
+        if (!is.null(guarantor_table))
+        {
+          if ("guarantor" %in% names(o)) {
+            add_guarantor <- data.frame()
+            if (length(o$guarantor) > 0) {
+              for ( j in 1:length(o$guarantor)) {
+                g_row <- data.frame(o$guarantor[[j]], stringsAsFactors = FALSE)
+                g_row <- as.list(apply(g_row, 2, as.character)) 
+                g_row[["guarantor_id"]] <- names(o$guarantor)[j]
+                g_row[['object_id']] <- names(step)[i]
+                add_guarantor <- bind_rows(add_guarantor, g_row)
+              }
+            }
+          }
+        }
+        if (!is.null(guarantor_realty_table))
+        {
+          if ("guarantor_realty" %in% names(o)) {
+            add_guarantor_r <- data.frame()
+            if (length(o$guarantor_realty) > 0) {
+              for ( j in 1:length(o$guarantor_realty)) {
+                gr_row <- data.frame(o$guarantor_realty[[j]], stringsAsFactors = FALSE)
+                gr_row <- as.list(apply(gr_row, 2, as.character)) 
+                gr_row[["guarantor_realty_id"]] <- names(o$guarantor_realty)[j]
+                gr_row[['object_id']] <- names(step)[i]
+                add_guarantor_r <- bind_rows(add_guarantor_r, gr_row)
+              }
+            }
+          }
         }
         o$rights <- NULL
         o$guarantor <- NULL
         o$guarantor_realty <- NULL
+        o <- lapply(o, function(x) {ifelse(length(x) == 0, "", x)})
         df_new <- data.frame(o, stringsAsFactors = F)
         df_new <- as.list(apply(df_new, 2, as.character))
         df_new[['object_id']] <- names(step)[i]
@@ -309,10 +457,14 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
     }
     if (nrow(df) > 0) {
       if (!is.null(rights_table)) {
-        #print("assigning")
-        assign(rights_table, bind_rows(eval(parse(text = rights_table)), add_rights), envir = globalenv())
-        #list(data = cbind(get_infocard(d), df), rights = add_rights)
+        assign(rights_table, dplyr::bind_rows(eval(parse(text = rights_table)), add_rights), envir = globalenv())
       } 
+      if (!is.null(guarantor_table)) {
+        assign(guarantor_table, dplyr::bind_rows(eval(parse(text = guarantor_table)), add_guarantor), envir = globalenv())
+      }      
+      if (!is.null(guarantor_realty_table)) {
+        assign(guarantor_realty_table, dplyr::bind_rows(eval(parse(text = guarantor_realty_table)), add_guarantor_r), envir = globalenv())
+      }
       cbind(get_infocard(d), df)
     }  
   } 
