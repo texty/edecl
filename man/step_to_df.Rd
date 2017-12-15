@@ -4,27 +4,30 @@
 \alias{step_to_df}
 \title{Extract declarations sections}
 \usage{
-step_to_df(decls, step, rights_table = NULL, guarantor_table = NULL,
-  guarantor_realty_table = NULL)
+step_to_df(decls, step, add_rights = FALSE, guarantor = FALSE,
+  guarantor_realty = FALSE)
 }
 \arguments{
-\item{step}{Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 15}
+\item{step}{Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 16}
 
-\item{rights_table}{Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored. NB: cannot be equal "rights_table"}
+\item{add_rights}{Logical. Should information on additional (not belonged to declarer or his family members) rights be saved? Default to FALSE.}
 
-\item{guarantor_realty_table}{Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_realty_table"}
+\item{guarantor_realty}{Logical. Should information on loan guarantors' realty be saved? Defaults to FALSE.}
 
 \item{d}{Declarations set}
 
-\item{guarantor_table.}{Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_table"}
+\item{guarantor.}{Logical. Should information on loan guarantors be saved? Defaults to FALSE.}
 }
 \description{
 Extract specific sections of declarations into dataframe. For now - ignoring "rights" and "guarantor" subsections
+}
+\details{
+The value is always list of 4 data frames. The data frames are available by names "data", "add_rights", "guarantor", "guarantor_realty". If corresponded parameters equal FALSE, these dataframes are always blank. If these parameters are set to TRUE, the function works slower.
 }
 \examples{
 library(dplyr)
 mps2016_realty <- 
    download_declarations("народний депутат", declaration_year = "2016") \%>\% 
-   step_to_df("step_3")
+   step_to_df(3)$data
 }
 \keyword{step_to_df}

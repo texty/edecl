@@ -308,39 +308,35 @@ same_person <- function(d1, d2) {
 #'
 #' Extract specific sections of declarations into dataframe. For now - ignoring "rights" and "guarantor" subsections
 #' @param d Declarations set
-#' @param step Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 15
-#' @param rights_table Character. The name of variable where you want information on additional (not belonged to declarer or his family members) rights to be saved. If missed, no information will be stored. NB: cannot be equal "rights_table"
-#' @param guarantor_table. Character. The name of variable where you want information on loan guarantors to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_table"
-#' @param guarantor_realty_table Character. The name of variable where you want information on loan guarantors' realty to be saved. If missed, no information will be saved. NB: cannot be equal "guarantor_realty_table"
+#' @param step Step (section) of declarations to be extracted. Works correctly if receives values between 2 and 16
+#' @param add_rights Logical. Should information on additional (not belonged to declarer or his family members) rights be saved? Default to FALSE.
+#' @param guarantor. Logical. Should information on loan guarantors be saved? Defaults to FALSE.
+#' @param guarantor_realty Logical. Should information on loan guarantors' realty be saved? Defaults to FALSE.
 #' @keywords step_to_df
-#' @export
+#' @details The value is always list of 4 data frames. The data frames are available by names "data", "add_rights", "guarantor", "guarantor_realty". If corresponded parameters equal FALSE, these dataframes are always blank. If these parameters are set to TRUE, the function works slower.
 #' @examples 
 #' library(dplyr)
 #' mps2016_realty <- 
 #'    download_declarations("народний депутат", declaration_year = "2016") %>% 
-#'    step_to_df("step_3")
-step_to_df <- function(decls, step, rights_table = NULL, 
-                       guarantor_table = NULL, guarantor_realty_table = NULL) {
-  df <- data.frame()
-  if (!is.null(rights_table)) {
-    assign(rights_table, data.frame(), envir = globalenv())
-  }
-  if (!is.null(guarantor_table)) {
-    assign(guarantor_table, data.frame(), envir = globalenv())
-  }
-  if (!is.null(guarantor_realty_table)) {
-    assign(guarantor_realty_table, data.frame(), envir = globalenv())
-  }
+#'    step_to_df(3)$data
+step_to_df <- function(decls, step, add_rights = FALSE, 
+                       guarantor = FALSE, guarantor_realty = FALSE) {
+  final_list <- list()
+
   pb <- txtProgressBar(min = 0, max = length(decls), style = 3)
   count <- 1
   for (d in decls) {
-    df <- dplyr::bind_rows(df, single_step_to_df(d, step, rights_table = rights_table ,
-                                                  guarantor_table = guarantor_table, 
-                                                 guarantor_realty_table = guarantor_realty_table))
+    single_declaration <- single_step_to_df(d, step, add_rights = add_rights ,
+                                            guarantor = guarantor, 
+                                            guarantor_realty = guarantor_realty)
+    final_list$data <- dplyr::bind_rows(final_list$data, single_declaration$data)
+    final_list$add_rights <- dplyr::bind_rows(final_list$add_rights, single_declaration$add_rights)
+    final_list$guarantor <- dplyr::bind_rows(final_list$guarantor, single_declaration$guarantor)
+    final_list$guarantor_realty <- dplyr::bind_rows(final_list$guarantor_realty, single_declaration$guarantor_realty)
     setTxtProgressBar(pb, count)
     count <- count + 1
   }
-  char2num(df)
+  final_list
 }
 
 
@@ -364,7 +360,8 @@ dexclude <- function(decls1, decls2) {
 }
 
 
-single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NULL, guarantor_realty_table = NULL) {
+single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, guarantor_realty = FALSE) {
+  final_list <- list()
   if (class(step) == "numeric") {
     step <- paste0("step_", as.character(step))
   }
@@ -373,7 +370,6 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
   } else {
     st <- list()
     step <-  d[['unified_source']][[step]]
-    #print(step)
     for (ot in 1:length(step)) {
       org_of_type <- step[[ot]]
       if (length(org_of_type) > 0) {
@@ -389,7 +385,7 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
     }
     step <- st
   }
-  add_rights <- data.frame(stringsAsFactors = FALSE)
+  add_rights_table <- data.frame(stringsAsFactors = FALSE)
   g_table <- data.frame(stringsAsFactors = FALSE)
   g_r_table <- data.frame(stringsAsFactors = FALSE)
   if (length(step) > 0) {
@@ -403,21 +399,22 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
           rights_columns <- o$rights[[o$person]][c("ownershipType", "otherOwnership", "percent-ownership")]
           o$rights[[o$person]] <- NULL
           rights_columns <- data.frame(rights_columns, stringsAsFactors = FALSE)
-          if (length(o$rights) > 0) {
-            for (j in 1:length(o$rights)) {
-              rights_row <- data.frame(o$rights[[j]], stringsAsFactors = FALSE)
-              rights_row <- as.list(apply(rights_row, 2, as.character))
-              rights_row[['rightBelongs']] <- names(o$rights)[j]
-              rights_row[['object_id']] <- names(step)[i]
-              add_rights <- bind_rows(add_rights, rights_row)
+          if (add_rights) {
+            if (length(o$rights) > 0) {
+              for (j in 1:length(o$rights)) {
+                rights_row <- data.frame(o$rights[[j]], stringsAsFactors = FALSE)
+                rights_row <- as.list(apply(rights_row, 2, as.character))
+                rights_row[['rightBelongs']] <- names(o$rights)[j]
+                rights_row[['object_id']] <- names(step)[i]
+                add_rights_table <- bind_rows(add_rights_table, rights_row)
+              }
             }
           }
-          
         }
-        if (!is.null(guarantor_table))
+        if (guarantor)
         {
+          add_guarantor <- data.frame()
           if ("guarantor" %in% names(o)) {
-            add_guarantor <- data.frame()
             if (length(o$guarantor) > 0) {
               for ( j in 1:length(o$guarantor)) {
                 g_row <- data.frame(o$guarantor[[j]], stringsAsFactors = FALSE)
@@ -429,10 +426,10 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
             }
           }
         }
-        if (!is.null(guarantor_realty_table))
+        if (guarantor_realty)
         {
+          add_guarantor_r <- data.frame()
           if ("guarantor_realty" %in% names(o)) {
-            add_guarantor_r <- data.frame()
             if (length(o$guarantor_realty) > 0) {
               for ( j in 1:length(o$guarantor_realty)) {
                 gr_row <- data.frame(o$guarantor_realty[[j]], stringsAsFactors = FALSE)
@@ -453,19 +450,19 @@ single_step_to_df <- function(d, step, rights_table = NULL, guarantor_table = NU
         df_new[['object_id']] <- names(step)[i]
         df <- dplyr::bind_rows(df, dplyr::bind_cols(df_new, rights_columns))
       }
-      
     }
     if (nrow(df) > 0) {
-      if (!is.null(rights_table)) {
-        assign(rights_table, dplyr::bind_rows(eval(parse(text = rights_table)), add_rights), envir = globalenv())
+      final_list$data <- char2num(cbind(get_infocard(d), df))
+      if (add_rights) {
+        final_list$add_rights <- add_rights_table
       } 
-      if (!is.null(guarantor_table)) {
-        assign(guarantor_table, dplyr::bind_rows(eval(parse(text = guarantor_table)), add_guarantor), envir = globalenv())
+      if (guarantor) {
+        final_list$guarantor <- add_guarantor
       }      
-      if (!is.null(guarantor_realty_table)) {
-        assign(guarantor_realty_table, dplyr::bind_rows(eval(parse(text = guarantor_realty_table)), add_guarantor_r), envir = globalenv())
+      if (guarantor_realty) {
+        final_list$guarantor_realty <- add_guarantor_r
       }
-      cbind(get_infocard(d), df)
-    }  
-  } 
+    } 
+  }
+  final_list
 }
