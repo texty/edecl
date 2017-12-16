@@ -430,7 +430,7 @@ single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, gu
                 rights_row <- as.list(apply(rights_row, 2, as.character))
                 rights_row[['rightBelongs']] <- names(o$rights)[j]
                 rights_row[['object_id']] <- names(step)[i]
-                add_rights_table <- bind_rows(add_rights_table, rights_row)
+                add_rights_table <- dplyr::bind_rows(add_rights_table, rights_row)
               }
             }
           }
@@ -445,7 +445,7 @@ single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, gu
                 g_row <- as.list(apply(g_row, 2, as.character)) 
                 g_row[["guarantor_id"]] <- names(o$guarantor)[j]
                 g_row[['object_id']] <- names(step)[i]
-                add_guarantor <- bind_rows(add_guarantor, g_row)
+                add_guarantor <- dplyr::bind_rows(add_guarantor, g_row)
               }
             }
           }
@@ -460,7 +460,7 @@ single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, gu
                 gr_row <- as.list(apply(gr_row, 2, as.character)) 
                 gr_row[["guarantor_realty_id"]] <- names(o$guarantor_realty)[j]
                 gr_row[['object_id']] <- names(step)[i]
-                add_guarantor_r <- bind_rows(add_guarantor_r, gr_row)
+                add_guarantor_r <- dplyr::bind_rows(add_guarantor_r, gr_row)
               }
             }
           }
