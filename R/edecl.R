@@ -312,6 +312,7 @@ same_person <- function(d1, d2) {
 #' @param add_rights Logical. Should information on additional (not belonged to declarer or his family members) rights be saved? Default to FALSE.
 #' @param guarantor. Logical. Should information on loan guarantors be saved? Defaults to FALSE.
 #' @param guarantor_realty Logical. Should information on loan guarantors' realty be saved? Defaults to FALSE.
+#' @export
 #' @keywords step_to_df
 #' @details The value is always list of 4 data frames. The data frames are available by names "data", "add_rights", "guarantor", "guarantor_realty". If corresponded parameters equal FALSE, these dataframes are always blank. If these parameters are set to TRUE, the function works slower.
 #' @examples 
