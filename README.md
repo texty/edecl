@@ -23,3 +23,5 @@
   * dintersect
   * dexclude
   * related_companies
+  * extract_info
+
