@@ -10,7 +10,7 @@ Description: A longer statement about what this does. It must have at least one
 Version: 0.1.0
 Date: 2017-12-07
 Authors@R: c(person("Pavlo Myronov", "name", role=c("aut"), email="paul.myronov@gmail.com"))
-Author: yourname [aut, cre]
+Author: Pavlo Myronov [aut, cre]
 Maintainer: Pavlo Myronov <paul.myronov@gmail.com>
 URL: https://github.com/texty/edecl
 BugReports: https://github.com/texty/edecl/issues
