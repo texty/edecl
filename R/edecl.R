@@ -8,7 +8,7 @@ add_mult_parameters <- function(params, param_name) {
 
 char2num <- function(df) {
   num_fields <- c("totalArea", "costAssessment", "costDate", "percent.ownership", 
-                  "sizeAssets", "sizeObligation", "costAmount")
+                  "sizeAssets", "sizeObligation", "costAmount", "sizeIncome")
   date_fields <- c("owningDate", "dateOrigin")
   datetime_fields <- c("created_date")
   num_fields <- num_fields[num_fields %in% names(df)]
