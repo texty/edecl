@@ -266,8 +266,8 @@ get_corrected <- function(decls) {
     identical_names_number <- identical_names_number[identical_names_number > i]
     for (j in identical_names_number) {
       if (same_person(decls[[i]], decls[[j]])) {
-        if(decls[[j]]$infocard$is_corrected) {
-          final[i] <- FALSE
+         final[j] <- decls[[j]]$infocard$is_corrected
+         final[i] <- decls[[i]]$infocard$is_corrected
         }
       }
     }
