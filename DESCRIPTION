@@ -9,6 +9,7 @@ Description: A longer statement about what this does. It must have at least one
     Failure to obey may result in CRAN rejecting your package submission.
 Version: 0.1.0
 Date: 2017-12-07
+Encoding: UTF-8
 Authors@R: c(person("your", "name", role=c("aut", "cre"), email="youremail@example.com"))
 Author: yourname [aut, cre]
 Maintainer: yourname <youremail@example.com>
