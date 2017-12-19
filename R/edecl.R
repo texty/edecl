@@ -268,7 +268,6 @@ get_corrected <- function(decls) {
       if (same_person(decls[[i]], decls[[j]])) {
          final[j] <- decls[[j]]$infocard$is_corrected
          final[i] <- decls[[i]]$infocard$is_corrected
-        }
       }
     }
   }
