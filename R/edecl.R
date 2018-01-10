@@ -59,6 +59,7 @@ get_infocard <- function(d) {
 #'
 #' Function to find companies related to declarers
 #' @param decls
+#' @encoding utf-8
 #' @keywords related_companies
 #' @export
 #' @examples 
@@ -158,6 +159,7 @@ post_type_switch <- function(n) {
 #' @param post_type Character or numeric. The type of declarer's position. Accepting vector longer than 1 element. 1 or "державної" for state authorities position, 2 or "місцевого" for local authorities, 3 or "юридичної" for state-owned enterprises.
 #' @param region_type Should it be search in regions where declarer is registered (1 or "region"), where he lives (2 or "actual_region") or where owns realty (3 or "estate_region")?
 #' @param region_value Region query value. Substring that can identify region name. 
+#' @encoding utf-8
 #' @keywords download_declarations
 #' @export
 #' @examples 
@@ -207,6 +209,7 @@ extract_guids <- function(decls) {
 #' Extracts names of the declarers
 #' @param decls The declarations set
 #' @keywords extract_names
+#' @encoding utf-8
 #' @export
 #' @examples 
 #' library(dplyr)
@@ -237,6 +240,7 @@ filter_by_guids <- function(decls, guids) {
 #' @param decls1 Declarations set
 #' @param decls2 Declarations set
 #' @keywords dintersect
+#' @encoding utf-8
 #' @export
 #' @examples 
 #' library(dplyr)
@@ -252,6 +256,7 @@ dintersect <- function(decls1, decls2) {
 #' Exclude from a set declarations that have corrected version.
 #' @param decls Declarations set
 #' @keywords get_corrected
+#' @encoding utf-8
 #' @export
 #' @examples 
 #' library(dplyr)
@@ -313,6 +318,7 @@ same_person <- function(d1, d2) {
 #' @param guarantor_realty Logical. Should information on loan guarantors' realty be saved? Defaults to FALSE.
 #' @export
 #' @keywords step_to_df
+#' @encoding utf-8
 #' @details The value is always list of 4 data frames. The data frames are available by names "data", "add_rights", "guarantor", "guarantor_realty". If corresponded parameters equal FALSE, these dataframes are always blank. If these parameters are set to TRUE, the function works slower.
 #' @examples 
 #' library(dplyr)
@@ -344,6 +350,7 @@ step_to_df <- function(decls, step, add_rights = FALSE,
 #' Excludes declarations from set that belongs to other set
 #' @param decls List of declarations.
 #' @keywords extract_info
+#' @encoding utf-8
 #' @export
 #' @examples 
 #' library(dplyr)
@@ -364,6 +371,7 @@ extract_info <- function(decls) {
 #' @param decls1 First set of declarations
 #' @param decls2 The second set of declarations, or their ids.
 #' @keywords dexclude
+#' @encoding utf-8
 #' @export
 #' @examples 
 #' library(dplyr)
