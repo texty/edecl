@@ -10,19 +10,11 @@ Description: A longer statement about what this does. It must have at least one
 Version: 0.1.0
 Date: 2017-12-07
 Encoding: UTF-8
-<<<<<<< HEAD
-Authors@R: c(person("your", "name", role=c("aut", "cre"), email="youremail@example.com"))
-Author: yourname [aut, cre]
-Maintainer: yourname <youremail@example.com>
-URL: https://github.com/yourgithub/edecl
-BugReports: https://github.com/yourgithub/edecl/issues
-=======
 Authors@R: c(person("Pavlo Myronov", "name", role=c("aut"), email="paul.myronov@gmail.com"))
 Author: Pavlo Myronov [aut, cre]
 Maintainer: Pavlo Myronov <paul.myronov@gmail.com>
 URL: https://github.com/texty/edecl
 BugReports: https://github.com/texty/edecl/issues
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
 License: MIT + file LICENSE
 Depends:
     R (>= 3.0.0)

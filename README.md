@@ -10,7 +10,7 @@
 Для встановлення з гіт-репозиторію потрібено мати встановлений пакет devtools
 
     install.packages("devtools")
-    devtools::install_git("https://github.com/texty/edecl")
+    devtools::install_github("texty/edecl")
     library(edecl)
 
 Решта вимог мають задовольнитися автоматично при встановленні пакунку. Для зручності ми використовуємо синтаксис pipelines (%>%) та команди бібліотеки dplyr.

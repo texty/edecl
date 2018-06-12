@@ -8,11 +8,7 @@ add_mult_parameters <- function(params, param_name) {
 
 char2num <- function(df) {
   num_fields <- c("totalArea", "costAssessment", "costDate", "percent.ownership", 
-<<<<<<< HEAD
-                  "sizeAssets", "sizeObligation", "costAmount")
-=======
                   "sizeAssets", "sizeObligation", "costAmount", "sizeIncome")
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
   date_fields <- c("owningDate", "dateOrigin")
   datetime_fields <- c("created_date")
   num_fields <- num_fields[num_fields %in% names(df)]
@@ -52,16 +48,13 @@ decl_request <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL,
 }
 
 get_infocard <- function(d) {
+  d$infocard <- lapply(d$infocard, function(x) {ifelse(is.null(x), NA, x)})
   df <- data.frame(matrix(unlist(d$infocard), byrow = TRUE, nrow = 1), stringsAsFactors = F)
   names(df) <- names(d$infocard)
   #df$guid <- d$guid
   df$fullname <- stringr::str_trim(paste(df$last_name, df$first_name, df$patronymic))
 
-<<<<<<< HEAD
-  df[, c("fullname", names(df)[-which(names(df) == "fullname")])]
-=======
   df[, c("fullname", "office", "position", "id", names(df)[-which(names(df) %in% c("fullname", "office", "position", "id")  )])]
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
 }
 #' Related companies
 #'
@@ -167,10 +160,7 @@ post_type_switch <- function(n) {
 #' @param post_type Character or numeric. The type of declarer's position. Accepting vector longer than 1 element. 1 or "державної" for state authorities position, 2 or "місцевого" for local authorities, 3 or "юридичної" for state-owned enterprises.
 #' @param region_type Should it be search in regions where declarer is registered (1 or "region"), where he lives (2 or "actual_region") or where owns realty (3 or "estate_region")?
 #' @param region_value Region query value. Substring that can identify region name. 
-<<<<<<< HEAD
-=======
 #' @encoding utf-8
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
 #' @keywords download_declarations
 #' @export
 #' @examples 
@@ -327,13 +317,9 @@ same_person <- function(d1, d2) {
 #' @param add_rights Logical. Should information on additional (not belonged to declarer or his family members) rights be saved? Default to FALSE.
 #' @param guarantor. Logical. Should information on loan guarantors be saved? Defaults to FALSE.
 #' @param guarantor_realty Logical. Should information on loan guarantors' realty be saved? Defaults to FALSE.
-<<<<<<< HEAD
-#' @keywords step_to_df
-=======
 #' @export
 #' @keywords step_to_df
 #' @encoding utf-8
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
 #' @details The value is always list of 4 data frames. The data frames are available by names "data", "add_rights", "guarantor", "guarantor_realty". If corresponded parameters equal FALSE, these dataframes are always blank. If these parameters are set to TRUE, the function works slower.
 #' @examples 
 #' library(dplyr)
@@ -346,18 +332,6 @@ step_to_df <- function(decls, step, add_rights = FALSE,
 
   pb <- txtProgressBar(min = 0, max = length(decls), style = 3)
   count <- 1
-<<<<<<< HEAD
-  for (d in decls) {
-    single_declaration <- single_step_to_df(d, step, add_rights = add_rights ,
-                                            guarantor = guarantor, 
-                                            guarantor_realty = guarantor_realty)
-    final_list$data <- dplyr::bind_rows(final_list$data, single_declaration$data)
-    final_list$add_rights <- dplyr::bind_rows(final_list$add_rights, single_declaration$add_rights)
-    final_list$guarantor <- dplyr::bind_rows(final_list$guarantor, single_declaration$guarantor)
-    final_list$guarantor_realty <- dplyr::bind_rows(final_list$guarantor_realty, single_declaration$guarantor_realty)
-    setTxtProgressBar(pb, count)
-    count <- count + 1
-=======
   for (d in decls) {
     single_declaration <- single_step_to_df(d, step, add_rights = add_rights ,
                                             guarantor = guarantor, 
@@ -388,27 +362,17 @@ extract_info <- function(decls) {
   df <- data.frame()
   for (d in decls) {
     df <- dplyr::bind_rows(df, get_infocard(d))
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
   }
-  final_list
+  df
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
 #' Exclude declarations from set
 #'
 #' Excludes declarations from set that belongs to other set
 #' @param decls1 First set of declarations
-<<<<<<< HEAD
-#' @param decls1 The second set of declarations
-#' @keywords dexclude
-=======
 #' @param decls2 The second set of declarations, or their ids.
 #' @keywords dexclude
 #' @encoding utf-8
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
 #' @export
 #' @examples 
 #' library(dplyr)
@@ -417,16 +381,12 @@ extract_info <- function(decls) {
 #'    dexclude(download_declarations("помічник народного депутата", declaration_year = "2016"))
 dexclude <- function(decls1, decls2) {
   d1_guids <- extract_guids(decls1)
-<<<<<<< HEAD
-  d2_guids <- extract_guids(decls2)
-=======
   if (class(decls2) == "list") {
     d2_guids <- extract_guids(decls2)
   } else {
     d2_guids <- as.character(decls2)
   }
   
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
   guids <- d1_guids[!(d1_guids %in% d2_guids)]
   filter_by_guids(decls1, guids)
 }
@@ -478,11 +438,7 @@ single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, gu
                 rights_row <- as.list(apply(rights_row, 2, as.character))
                 rights_row[['rightBelongs']] <- names(o$rights)[j]
                 rights_row[['object_id']] <- names(step)[i]
-<<<<<<< HEAD
-                add_rights_table <- bind_rows(add_rights_table, rights_row)
-=======
                 add_rights_table <- dplyr::bind_rows(add_rights_table, rights_row)
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
               }
             }
           }
@@ -497,11 +453,7 @@ single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, gu
                 g_row <- as.list(apply(g_row, 2, as.character)) 
                 g_row[["guarantor_id"]] <- names(o$guarantor)[j]
                 g_row[['object_id']] <- names(step)[i]
-<<<<<<< HEAD
-                add_guarantor <- bind_rows(add_guarantor, g_row)
-=======
                 add_guarantor <- dplyr::bind_rows(add_guarantor, g_row)
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
               }
             }
           }
@@ -516,11 +468,7 @@ single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, gu
                 gr_row <- as.list(apply(gr_row, 2, as.character)) 
                 gr_row[["guarantor_realty_id"]] <- names(o$guarantor_realty)[j]
                 gr_row[['object_id']] <- names(step)[i]
-<<<<<<< HEAD
-                add_guarantor_r <- bind_rows(add_guarantor_r, gr_row)
-=======
                 add_guarantor_r <- dplyr::bind_rows(add_guarantor_r, gr_row)
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
               }
             }
           }
@@ -549,8 +497,4 @@ single_step_to_df <- function(d, step, add_rights = FALSE, guarantor = FALSE, gu
     } 
   }
   final_list
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> bf9d46bd1ca6df79852129e9ad18df873cc0b89a
