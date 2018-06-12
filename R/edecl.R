@@ -48,6 +48,7 @@ decl_request <- function(q = NULL, deepsearch=FALSE, declaration_year = NULL,
 }
 
 get_infocard <- function(d) {
+  d$infocard <- lapply(d$infocard, function(x) {ifelse(is.null(x), NA, x)})
   df <- data.frame(matrix(unlist(d$infocard), byrow = TRUE, nrow = 1), stringsAsFactors = F)
   names(df) <- names(d$infocard)
   #df$guid <- d$guid
